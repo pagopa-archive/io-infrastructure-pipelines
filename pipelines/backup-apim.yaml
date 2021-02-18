@@ -61,3 +61,12 @@ jobs:
             echo "Get storage context"
             $storageContext = New-AzStorageContext `
             -StorageAccountName $targetStorageAccount
+
+            echo "Backup APIM"
+            Backup-AzApiManagement `
+            -ResourceGroupName $apimSourceRg  `
+            -Name $apimSource `
+            -StorageContext $storageContext `
+            -TargetContainerName $storageContainer -TargetBlobName "apim-backup"
+
+            echo "Done !!!"
