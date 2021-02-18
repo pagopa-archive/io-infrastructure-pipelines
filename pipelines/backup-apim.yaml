@@ -41,11 +41,12 @@ jobs:
   - job: backup_apim
     steps:
       # 1. Run power shell task to backup apim instance into a storage account.
-      - task: AzurePowerShell@4
+      - task: AzurePowerShell@5
         inputs:
-          azureSubscription: '${{ parameters.SUBSCRIPTION_SERVICE_CONNECTION }}'
-          scriptType: 'inlineScript'
-          failOnStandardError: false
-          inline: |
-
-            echo "I am here."
+          ScriptType: 'InlineScript'
+          Inline: |
+            # You can write your azure powershell scripts inline here. 
+            # You can also pass predefined and custom variables to this script using arguments
+      
+            echo "I am here"
+            azurePowerShellVersion: 'LatestVersion'
