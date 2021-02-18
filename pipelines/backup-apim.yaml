@@ -37,24 +37,26 @@ parameters:
 pool:
   vmImage: 'ubuntu-latest'
 
+jobs:
+  - job: backup_secrets
+    steps:
+      # 1. Run power shell task to backup apim instance into a storage account.
+      - task: PowerShell@4
+        inputs:
+          azureSubscription: '${{ parameters.SUBSCRIPTION_SERVICE_CONNECTION }}'
+          targetType: 'inline'
+          script: |
+            $apimSourceRg = ${{ parameters.APIM_RG }}
+            $apimSource = ${{ parameters.APIM_NAME }}
+            $targetStorageAccount = ${{ parameters.STORAGE_ACCOUNT_NAME }}
+            $storageAccountRg = ${{ parameters.STORAGE_ACCOUNT_RG }}
+            $storageContainer= "apimbackup"
 
-steps:
-  - task: PowerShell@4
-    inputs:
-      azureSubscription: '${{ parameters.SUBSCRIPTION_SERVICE_CONNECTION }}'
-      targetType: 'inline'
-      script: |
-        $apimSourceRg = ${{ parameters.APIM_RG }}
-        $apimSource = ${{ parameters.APIM_NAME }}
-        $targetStorageAccount = ${{ parameters.STORAGE_ACCOUNT_NAME }}
-        $storageAccountRg = ${{ parameters.STORAGE_ACCOUNT_RG }}
-        $storageContainer= "apimbackup"
+            $storageContext = New-AzStorageContext `
+            -StorageAccountName $targetStorageAccount
 
-        $storageContext = New-AzStorageContext `
-        -StorageAccountName $targetStorageAccount
-
-        Backup-AzApiManagement `
-        -ResourceGroupName $apimSourceRg  `
-        -Name $apimSource `
-        -StorageContext $storageContext `
-        -TargetContainerName $storageContainer -TargetBlobName "apim-backup"
+            Backup-AzApiManagement `
+            -ResourceGroupName $apimSourceRg  `
+            -Name $apimSource `
+            -StorageContext $storageContext `
+            -TargetContainerName $storageContainer -TargetBlobName "apim-backup"
