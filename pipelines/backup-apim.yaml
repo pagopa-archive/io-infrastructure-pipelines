@@ -37,19 +37,6 @@ parameters:
 pool:
   vmImage: 'ubuntu-latest'
 
-- task: AzurePowerShell@5
-  inputs:
-    ScriptType: 'InlineScript'
-    Inline: |
-      # You can write your azure powershell scripts inline here.
-      # You can also pass predefined and custom variables to this script using arguments
-
-      $targetStorageAccount = "iopstbackups"
-
-      $storageContext = New-AzStorageContext `
-      -StorageAccountName $targetStorageAccount
-
-
 jobs:
   - job: backup_apim
     steps:
