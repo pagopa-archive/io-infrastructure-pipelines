@@ -51,4 +51,13 @@ jobs:
             # You can also pass predefined and custom variables to this script using arguments
 
             echo "I am here"
-            azurePowerShellVersion: 'LatestVersion'
+
+            $apimSourceRg = "${{ parameters.APIM_RG }}"
+            $apimSource = "${{ parameters.APIM_NAME }}"
+            $targetStorageAccount = "${{ parameters.STORAGE_ACCOUNT_NAME }}"
+            $storageAccountRg = "${{ parameters.STORAGE_ACCOUNT_RG }}"
+            $storageContainer= "apimbackup"
+
+            echo "Get storage context"
+            $storageContext = New-AzStorageContext `
+            -StorageAccountName $targetStorageAccount
