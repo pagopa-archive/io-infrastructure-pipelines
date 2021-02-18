@@ -44,7 +44,7 @@ jobs:
       - task: AzurePowerShell@4
         inputs:
           azureSubscription: '${{ parameters.SUBSCRIPTION_SERVICE_CONNECTION }}'
-          scriptType: 'inline'
+          scriptType: 'inlineScript'
           failOnStandardError: false
           inline: |
 
