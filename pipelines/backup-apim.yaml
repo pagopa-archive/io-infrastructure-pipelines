@@ -1,0 +1,60 @@
+schedules:
+- cron: "0 0 * * Sun,Thu"
+  displayName: At 00:00 on Sunday and Thursday.
+  branches:
+    include:
+    - master
+
+parameters:
+  - name: 'SUBSCRIPTION_SERVICE_CONNECTION'
+    displayName: 'Azure subscription service connection name hosting the infrastructure built with terraform'
+    type: string
+    default: PROD-IO-SERVICE-CONN
+    values:
+      - PROD-IO-SERVICE-CONN
+      - DEV-IO-SERVICE-CONN
+  - name: 'APIM_RG'
+    displayName: 'API Management resource group name.'
+    type: string
+    default: io-p-rg-internal
+  - name: 'APIM_NAME'
+    displayName: 'API Management name'
+    type: string
+    default: io-p-apim-api
+  - name: 'STORAGE_ACCOUNT_RG'
+    displayName: 'Storage account resource group where to store the backup.'
+    type: string
+    default: io-p-rg-operations
+  - name: 'STORAGE_ACCOUNT_NAME'
+    displayName: 'Storage account where to store the backup.'
+    type: string
+    default: iopstbackups
+  - name: 'CONTAINER_NAME'
+    displayName: 'Name of the container inside the storage account'
+    type: string
+    default: apimbackup
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+
+steps:
+  - task: PowerShell@4
+    inputs:
+      azureSubscription: '${{ parameters.SUBSCRIPTION_SERVICE_CONNECTION }}'
+      targetType: 'inline'
+      script: |
+        $apimSourceRg = ${{ parameters.APIM_RG }}
+        $apimSource = ${{ parameters.APIM_NAME }}
+        $targetStorageAccount = ${{ parameters.STORAGE_ACCOUNT_NAME }}
+        $storageAccountRg = ${{ parameters.STORAGE_ACCOUNT_RG }}
+        $storageContainer= "apimbackup"
+
+        $storageContext = New-AzStorageContext `
+        -StorageAccountName $targetStorageAccount
+
+        Backup-AzApiManagement `
+        -ResourceGroupName $apimSourceRg  `
+        -Name $apimSource `
+        -StorageContext $storageContext `
+        -TargetContainerName $storageContainer -TargetBlobName "apim-backup"
