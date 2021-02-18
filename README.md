@@ -1,6 +1,6 @@
 # io-infrastructure-pipelines
 
-This repository collects a set of pipelines aming to automate some common and ripetitive tasks useful to maintein the cloud infrastructure hosting the backend of the [mobile app IO](https://io.italia.it/).
+This repository collects a set of pipelines aming to automate some common and ripetitive tasks useful to maintain the cloud infrastructure hosting the backend of the [mobile app IO](https://io.italia.it/).
 
 The pipelines are designed to run within Azure DevOps.
 
