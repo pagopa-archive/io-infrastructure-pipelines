@@ -54,19 +54,21 @@ jobs:
 
             $apimSourceRg = "${{ parameters.APIM_RG }}"
             $apimSource = "${{ parameters.APIM_NAME }}"
+            $targetStorageAccountRg = "${{ parameters.STORAGE_ACCOUNT_RG }}"
             $targetStorageAccount = "${{ parameters.STORAGE_ACCOUNT_NAME }}"
-            $storageAccountRg = "${{ parameters.STORAGE_ACCOUNT_RG }}"
             $storageContainer= "apimbackup"
 
             echo "Get storage context"
-            $storageContext = New-AzStorageContext `
-            -StorageAccountName $targetStorageAccount
+            $storageKey=(Get-AzStorageAccountKey -ResourceGroupName $targetStorageAccountRg -Name $targetStorageAccount).Value[0]
+            $storageContext  = New-AzStorageContext -StorageAccountName $targetStorageAccount `
+            -StorageAccountKey $storageKey
 
             echo "Backup APIM"
             Backup-AzApiManagement `
             -ResourceGroupName $apimSourceRg  `
             -Name $apimSource `
             -StorageContext $storageContext `
-            -TargetContainerName $storageContainer -TargetBlobName "apim-backup"
+            -TargetContainerName $storageContainer `
+            -TargetBlobName "apim-backup"
 
             echo "Done !!!"
