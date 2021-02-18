@@ -41,7 +41,7 @@ jobs:
   - job: backup_apim
     steps:
       # 1. Run power shell task to backup apim instance into a storage account.
-      - task: PowerShell@2
+      - task: PowerShell@4
         inputs:
           azureSubscription: '${{ parameters.SUBSCRIPTION_SERVICE_CONNECTION }}'
           targetType: 'inline'
