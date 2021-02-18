@@ -45,10 +45,10 @@ jobs:
         inputs:
           ConnectedServiceNameARM: '${{ parameters.SUBSCRIPTION_SERVICE_CONNECTION }}'
           ScriptType: 'InlineScript'
+          TargetAzurePs: 'latestvVersion'
           Inline: |
             # You can write your azure powershell scripts inline here.
             # You can also pass predefined and custom variables to this script using arguments
 
             echo "I am here"
             azurePowerShellVersion: 'LatestVersion'
-          TargetAzurePs: 'Latest installed version'
