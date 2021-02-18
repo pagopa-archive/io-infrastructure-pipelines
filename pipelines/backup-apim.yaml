@@ -1,6 +1,8 @@
+trigger: none
+
 schedules:
-- cron: "0 0 * * Sun,Thu"
-  displayName: At 00:00 on Sunday and Thursday.
+- cron: "0 1 * * *"
+  displayName: Every day at 1 am.
   branches:
     include:
     - master
@@ -49,8 +51,6 @@ jobs:
           Inline: |
             # You can write your azure powershell scripts inline here.
             # You can also pass predefined and custom variables to this script using arguments
-
-            echo "I am here"
 
             $apimSourceRg = "${{ parameters.APIM_RG }}"
             $apimSource = "${{ parameters.APIM_NAME }}"
