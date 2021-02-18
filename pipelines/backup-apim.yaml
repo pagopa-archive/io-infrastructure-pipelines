@@ -44,8 +44,9 @@ jobs:
       - task: AzurePowerShell@5
         inputs:
           azureSubscription: '${{ parameters.SUBSCRIPTION_SERVICE_CONNECTION }}'
-          targetType: 'inline'
-          script: |
+          scriptType: 'inline'
+          failOnStandardError: false
+          inline: |
             $apimSourceRg = "${{ parameters.APIM_RG }}"
             $apimSource = "${{ parameters.APIM_NAME }}"
             $targetStorageAccount = "${{ parameters.STORAGE_ACCOUNT_NAME }}"
