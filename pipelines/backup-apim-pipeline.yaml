@@ -5,7 +5,7 @@ schedules:
   displayName: Every day at 1 am.
   branches:
     include:
-    - master
+    - main
 
 parameters:
   - name: 'SUBSCRIPTION_SERVICE_CONNECTION'
