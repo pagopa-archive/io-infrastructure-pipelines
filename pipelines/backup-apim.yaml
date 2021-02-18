@@ -46,10 +46,10 @@ jobs:
           azureSubscription: '${{ parameters.SUBSCRIPTION_SERVICE_CONNECTION }}'
           targetType: 'inline'
           script: |
-            $apimSourceRg = ${{ parameters.APIM_RG }}
-            $apimSource = ${{ parameters.APIM_NAME }}
-            $targetStorageAccount = ${{ parameters.STORAGE_ACCOUNT_NAME }}
-            $storageAccountRg = ${{ parameters.STORAGE_ACCOUNT_RG }}
+            $apimSourceRg = "${{ parameters.APIM_RG }}"
+            $apimSource = "${{ parameters.APIM_NAME }}"
+            $targetStorageAccount = "${{ parameters.STORAGE_ACCOUNT_NAME }}"
+            $storageAccountRg = "${{ parameters.STORAGE_ACCOUNT_RG }}"
             $storageContainer= "apimbackup"
 
             $storageContext = New-AzStorageContext `
