@@ -1,0 +1,75 @@
+trigger: none
+
+schedules:
+- cron: "0 1 * * *"
+  displayName: Every day at 1 am.
+  branches:
+    include:
+    - main
+
+parameters:
+  - name: 'SUBSCRIPTION_SERVICE_CONNECTION'
+    displayName: 'Azure subscription service connection name hosting the infrastructure built with terraform'
+    type: string
+    default: PROD-IO-SERVICE-CONN
+    values:
+      - PROD-IO-SERVICE-CONN
+      - DEV-IO-SERVICE-CONN
+  - name: 'APIM_RG'
+    displayName: 'API Management resource group name.'
+    type: string
+    default: io-p-rg-internal
+  - name: 'APIM_NAME'
+    displayName: 'API Management name'
+    type: string
+    default: io-p-apim-api
+  - name: 'STORAGE_ACCOUNT_RG'
+    displayName: 'Storage account resource group where to store the backup.'
+    type: string
+    default: io-p-rg-operations
+  - name: 'STORAGE_ACCOUNT_NAME'
+    displayName: 'Storage account where to store the backup.'
+    type: string
+    default: iopstbackups
+  - name: 'CONTAINER_NAME'
+    displayName: 'Name of the container inside the storage account'
+    type: string
+    default: apimbackup
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+jobs:
+  - job: backup_apim
+    steps:
+      # 1. Run power shell task to backup apim instance into a storage account.
+      - task: AzurePowerShell@5
+        inputs:
+          ConnectedServiceNameARM: '${{ parameters.SUBSCRIPTION_SERVICE_CONNECTION }}'
+          ScriptType: 'InlineScript'
+          TargetAzurePs: 'latestvVersion'
+          FailOnStandardError: true
+          Inline: |
+            # You can write your azure powershell scripts inline here.
+            # You can also pass predefined and custom variables to this script using arguments
+
+            $apimSourceRg = "${{ parameters.APIM_RG }}"
+            $apimSource = "${{ parameters.APIM_NAME }}"
+            $targetStorageAccountRg = "${{ parameters.STORAGE_ACCOUNT_RG }}"
+            $targetStorageAccount = "${{ parameters.STORAGE_ACCOUNT_NAME }}"
+            $storageContainer= "apimbackup"
+
+            echo "Get storage context"
+            $storageKey=(Get-AzStorageAccountKey -ResourceGroupName $targetStorageAccountRg -Name $targetStorageAccount).Value[0]
+            $storageContext  = New-AzStorageContext -StorageAccountName $targetStorageAccount `
+            -StorageAccountKey $storageKey
+
+            echo "Backup APIM"
+            Backup-AzApiManagement `
+            -ResourceGroupName $apimSourceRg  `
+            -Name $apimSource `
+            -StorageContext $storageContext `
+            -TargetContainerName $storageContainer `
+            -TargetBlobName "apim-backup"
+
+            echo "Done !!!"
