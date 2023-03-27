@@ -1,3 +1,7 @@
+# :warning: Archived repository :warning:
+
+This repository is archived. New contents has been migrated in https://github.com/pagopa/azure-pipeline-templates
+
 # io-infrastructure-pipelines
 
 This repository collects a set of pipelines aming to automate some common and ripetitive tasks useful to maintain the cloud infrastructure hosting the backend of the [mobile app IO](https://io.italia.it/).
